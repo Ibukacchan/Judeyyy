@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#6d28d9">
+  <meta name="description" content="A playful purple name picker and group maker.">
+  <title>✨ PicklePop — Name Picker</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <style>
+    :root{--bg:#100b20;--panel:#1c1233;--panel2:#261744;--purple:#8b5cf6;--pink:#ec4899;--lav:#c4b5fd;--text:#f8f5ff;--muted:#b9acd4;--line:#49336c;--good:#a7f3d0}
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;color:var(--text);font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;background:radial-gradient(ellipse at 15% 0%,#482078 0,transparent 38%),radial-gradient(ellipse at 90% 25%,#39165d 0,transparent 34%),linear-gradient(145deg,#100b20,#170d2b 60%,#21103b);overflow-x:hidden}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(to bottom,black,transparent)}
+    .sparkle{position:fixed;pointer-events:none;z-index:0;color:#e9d5ff;animation:twinkle 3s ease-in-out infinite;opacity:.7}
+    @keyframes twinkle{0%,100%{opacity:.15;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.2) rotate(25deg)}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+    @keyframes pop{0%{transform:scale(.75);opacity:0}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+    @keyframes glow{0%,100%{box-shadow:0 0 18px #8b5cf633}50%{box-shadow:0 0 34px #c084fc88,0 0 60px #8b5cf633}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes confetti{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+    .wrap{width:min(1120px,94%);margin:auto;position:relative;z-index:1;padding:24px 0 50px}
+    header{text-align:center;padding:24px 10px 18px}
+    .logo{display:inline-flex;align-items:center;gap:9px;background:#ffffff12;border:1px solid #ffffff22;border-radius:999px;padding:8px 15px;color:#e9d5ff;font-size:.82rem;letter-spacing:.12em;text-transform:uppercase}
+    h1{font-size:clamp(2.5rem,7vw,4.8rem);line-height:1;margin:18px 0 10px;letter-spacing:-.06em;background:linear-gradient(90deg,#fff,#d8b4fe 45%,#f0abfc);color:transparent;background-clip:text;text-shadow:0 8px 45px #a855f755}
+    header p{color:var(--muted);margin:0;font-size:1.04rem}
+    .layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+    .card{background:linear-gradient(150deg,#261744eF,#1a112deF);border:1px solid #ffffff1c;border-radius:25px;padding:22px;box-shadow:0 18px 55px #08041166;backdrop-filter:blur(14px)}
+    .card h2{margin:0 0 6px;font-size:1.25rem}.sub{color:var(--muted);font-size:.9rem;margin:0 0 17px}
+    textarea,input,select{width:100%;background:#100b20;border:1px solid var(--line);color:var(--text);border-radius:14px;padding:13px 14px;font:inherit;outline:none;transition:.2s}
+    textarea{min-height:165px;resize:vertical;line-height:1.6}textarea:focus,input:focus,select:focus{border-color:#b794f6;box-shadow:0 0 0 3px #8b5cf633}
+    .row{display:flex;gap:9px;align-items:center}.row>*{min-width:0}.row input{flex:1}
+    button{border:0;border-radius:14px;padding:12px 16px;color:white;font:700 .95rem inherit;font-family:inherit;font-weight:750;cursor:pointer;transition:transform .18s,filter .18s,box-shadow .18s}
+    button:hover{transform:translateY(-2px);filter:brightness(1.12)}button:active{transform:scale(.97)}
+    .primary{background:linear-gradient(110deg,#7c3aed,#a855f7 55%,#db4bd4);box-shadow:0 8px 24px #9333ea44}
+    .secondary{background:#ffffff13;border:1px solid #ffffff22;color:#eadcff}
+    .danger{background:#7f1d3b66;border:1px solid #fb718555;color:#fecdd3}
+    .small{padding:8px 11px;font-size:.82rem;border-radius:11px}
+    .actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+    .count{font-size:.85rem;color:var(--lav);margin-top:10px}
+    .picker{grid-column:1/-1;text-align:center;padding:28px 20px 30px;position:relative;overflow:hidden;animation:glow 5s infinite}
+    .picker:before{content:"";position:absolute;width:360px;height:360px;border-radius:50%;background:#9333ea1c;filter:blur(50px);left:50%;top:45%;transform:translate(-50%,-50%);pointer-events:none}
+    .picker>*{position:relative}.eyebrow{font-size:.8rem;text-transform:uppercase;letter-spacing:.18em;color:#c4b5fd}
+    .name-display{min-height:112px;display:grid;place-items:center;font-size:clamp(2.4rem,8vw,5.2rem);font-weight:900;letter-spacing:-.04em;margin:10px 0 18px;overflow-wrap:anywhere;text-shadow:0 0 30px #c084fc88}
+    .name-display.animate{animation:pop .45s cubic-bezier(.2,1.5,.5,1)}
+    .pick-btn{font-size:1.15rem;padding:16px 34px;border-radius:999px;min-width:210px}
+    .pick-btn span{display:inline-block;margin-right:7px;animation:float 2s ease-in-out infinite}
+    .result-note{color:var(--muted);font-size:.88rem;margin-top:13px;min-height:20px}
+    .history{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+    .chip{background:#ffffff12;border:1px solid #ffffff1b;border-radius:999px;padding:7px 12px;color:#e9d5ff;font-size:.85rem}
+    .group-tools{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
+    .group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:14px}
+    .group-card{background:linear-gradient(145deg,#352052,#211532);border:1px solid #ffffff20;border-radius:17px;padding:14px;animation:pop .35s both}
+    .group-card h3{margin:0 0 10px;color:#e9d5ff;display:flex;justify-content:space-between;align-items:center;font-size:1rem}
+    .member{padding:7px 9px;margin:5px 0;background:#ffffff0b;border-radius:9px;color:#f4edff;font-size:.9rem;overflow-wrap:anywhere}
+    .empty{color:#9f91b9;text-align:center;padding:20px 8px;border:1px dashed #604b7c;border-radius:14px}
+    .footer{text-align:center;color:#897ba5;font-size:.8rem;padding:24px 10px}
+    .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;background:#f5eaff;color:#32134d;padding:12px 18px;border-radius:999px;font-weight:800;z-index:10;transition:.25s;box-shadow:0 10px 35px #0008;pointer-events:none}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .confetti{position:fixed;top:-20px;width:9px;height:14px;z-index:9;pointer-events:none;animation:confetti 2.7s linear forwards}
+    .toggle{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.88rem;margin-top:12px}.toggle input{width:auto;accent-color:#a855f7}
+    @media(max-width:760px){.layout{grid-template-columns:1fr}.picker{grid-column:auto}.card{padding:18px}.wrap{width:93%;padding-top:12px}header{padding-top:18px}.row.stack{flex-wrap:wrap}.row.stack button{flex:1}}
+  </style>
+</head>
+<body>
+  <div class="sparkle" style="left:7%;top:17%">✦</div><div class="sparkle" style="left:91%;top:12%;animation-delay:1s">✧</div><div class="sparkle" style="left:84%;top:64%;animation-delay:1.8s">✦</div><div class="sparkle" style="left:12%;top:78%;animation-delay:.6s">✧</div>
+  <main class="wrap">
+    <header>
+      <div class="logo">✦ The playful picker ✦</div>
+      <h1>PicklePop!</h1>
+      <p>Names, surprises, and perfectly mixed teams.</p>
+    </header>
+    <section class="card picker">
+      <div class="eyebrow">And the chosen one is...</div>
+      <div class="name-display" id="pickedName" aria-live="polite">✨ Ready?</div>
+      <button class="primary pick-btn" id="pickBtn"><span>🎲</span> PICK A NAME</button>
+      <div class="result-note" id="resultNote">Add names to begin your lucky draw!</div>
+      <div class="history" id="history"></div>
+      <label class="toggle"><input type="checkbox" id="noRepeat"> Don't pick the same name twice until everyone has been picked</label>
+    </section>
+    <div class="layout">
+      <section class="card">
+        <h2>🪄 Name collection</h2>
+        <p class="sub">One name per line, or paste a whole class list.</p>
+        <textarea id="namesInput" placeholder="Alex&#10;Jamie&#10;Taylor&#10;Morgan"></textarea>
+        <div class="count" id="nameCount">0 names ready</div>
+        <div class="actions">
+          <button class="primary" id="saveNames">Save names</button>
+          <button class="secondary" id="shuffleNames">Shuffle list</button>
+          <button class="secondary" id="clearNames">Clear</button>
+        </div>
+        <div class="actions">
+          <button class="secondary small" id="exportNames">Export names (.txt)</button>
+          <label class="secondary small" style="cursor:pointer">Import text file <input id="importFile" type="file" accept=".txt,text/plain" hidden></label>
+        </div>
+      </section>
+      <section class="card">
+        <h2>🎀 Make your groups</h2>
+        <p class="sub">Split everyone into balanced teams in one click.</p>
+        <label class="sub" for="groupMode">How would you like to divide them?</label>
+        <select id="groupMode"><option value="count">Number of groups</option><option value="size">People per group</option></select>
+        <div class="row" style="margin-top:10px">
+          <input id="groupAmount" type="number" min="1" max="100" value="4" aria-label="Group amount">
+          <button class="primary" id="makeGroups">Create groups ✨</button>
+        </div>
+        <div class="group-tools">
+          <button class="secondary small" id="reshuffleGroups">↻ Reshuffle</button>
+          <button class="secondary small" id="copyGroups">Copy groups</button>
+          <button class="secondary small" id="clearGroups">Clear groups</button>
+        </div>
+        <div id="groupsArea"><div class="empty">Your teams will appear here. Let the grouping magic begin!</div></div>
+      </section>
+    </div>
+    <div class="footer">Made for classroom fun · Your names stay on this device ✨</div>
+  </main>
+  <div class="toast" id="toast"></div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const input = $('namesInput'), picked = $('pickedName'), note = $('resultNote');
+  let names = [], history = [], groups = [];
+  let remaining = [];
+  const clean = text => [...new Set(text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean))];
+  const save = () => { try { localStorage.setItem('picklepop.names', JSON.stringify(names)); localStorage.setItem('picklepop.groups', JSON.stringify(groups)); } catch(e){} };
+  const notify = msg => { const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2100); };
+  const count = () => $('nameCount').textContent = `${names.length} ${names.length===1?'name':'names'} ready`;
+  const refreshNames = () => { names=clean(input.value); input.value=names.join('\n'); count(); remaining=names.slice(); save(); };
+  const shuffle = arr => { const a=arr.slice(); for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+  const confetti = () => { const colors=['#c084fc','#f0abfc','#f9a8d4','#a7f3d0','#fde68a']; for(let i=0;i<55;i++){const el=document.createElement('i');el.className='confetti';el.style.left=Math.random()*100+'vw';el.style.background=colors[i%colors.length];el.style.animationDelay=Math.random()*.7+'s';el.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(el);setTimeout(()=>el.remove(),3500);} };
+  const animatePick = name => { picked.classList.remove('animate'); void picked.offsetWidth; picked.textContent=name; picked.classList.add('animate'); };
+  $('saveNames').onclick=()=>{refreshNames();history=[];$('history').innerHTML='';notify('Names saved! ✨');};
+  $('namesInput').addEventListener('input',()=>{const n=clean(input.value);$('nameCount').textContent=`${n.length} ${n.length===1?'name':'names'} ready`;});
+  $('shuffleNames').onclick=()=>{refreshNames();names=shuffle(names);input.value=names.join('\n');remaining=names.slice();save();notify('List shuffled! 🌀');};
+  $('clearNames').onclick=()=>{input.value='';names=[];remaining=[];history=[];groups=[];save();count();renderGroups();$('history').innerHTML='';picked.textContent='✨ Ready?';note.textContent='Add names to begin your lucky draw!';notify('List cleared');};
+  $('pickBtn').onclick=()=>{
+    refreshNames(); if(!names.length){notify('Add at least one name first!');return;}
+    if($('noRepeat').checked){if(!remaining.length)remaining=shuffle(names);const i=Math.floor(Math.random()*remaining.length);const winner=remaining.splice(i,1)[0];animatePick(winner);note.textContent=remaining.length?`${remaining.length} name${remaining.length===1?'':'s'} left before the next full round.`:'Everyone has had a turn! The next pick starts a new round.';}
+    else {const winner=names[Math.floor(Math.random()*names.length)];animatePick(winner);note.textContent='The universe has chosen!';}
+    history.unshift(picked.textContent);history=history.slice(0,6);$('history').innerHTML=history.map((n,i)=>`<span class="chip">${i===0?'✨ ':''}${escapeHtml(n)}</span>`).join('');confetti();
+  };
+  function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  const make = () => {
+    refreshNames(); if(!names.length){notify('Add names before making groups!');return;}
+    const amount=Math.max(1,Math.min(100,parseInt($('groupAmount').value)||1));
+    let shuffled=shuffle(names), total=$('groupMode').value==='count'?Math.min(amount,names.length):Math.ceil(names.length/amount);
+    groups=Array.from({length:total},()=>[]);
+    shuffled.forEach((n,i)=>groups[i%total].push(n));
+    renderGroups();save();confetti();notify(`${total} groups created! 🎉`);
+  };
+  function renderGroups(){
+    const area=$('groupsArea');
+    if(!groups.length){area.innerHTML='<div class="empty">Your teams will appear here. Let the grouping magic begin!</div>';return;}
+    area.innerHTML='<div class="group-grid">'+groups.map((g,i)=>`<div class="group-card" style="animation-delay:${i*.07}s"><h3><span>Group ${i+1}</span><span>💜 ${g.length}</span></h3>${g.map(n=>`<div class="member">${escapeHtml(n)}</div>`).join('')}</div>`).join('')+'</div>';
+  }
+  $('makeGroups').onclick=make;
+  $('reshuffleGroups').onclick=()=>{if(!names.length){notify('Add names first!');return;}make();};
+  $('clearGroups').onclick=()=>{groups=[];save();renderGroups();notify('Groups cleared');};
+  $('copyGroups').onclick=async()=>{if(!groups.length){notify('Create groups first!');return;}const txt=groups.map((g,i)=>`GROUP ${i+1}\n${g.map(n=>'• '+n).join('\n')}`).join('\n\n');try{await navigator.clipboard.writeText(txt);notify('Groups copied!');}catch(e){notify('Copy is unavailable in this browser');}};
+  $('exportNames').onclick=()=>{refreshNames();const blob=new Blob([names.join('\n')],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='picklepop-names.txt';a.click();URL.revokeObjectURL(a.href);};
+  $('importFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{input.value=String(r.result||'');refreshNames();notify('Names imported!');};r.readAsText(f);e.target.value='';};
+  $('groupMode').onchange=()=>{$('groupAmount').value=$('groupMode').value==='count'?4:5;};
+  try{names=JSON.parse(localStorage.getItem('picklepop.names')||'[]');groups=JSON.parse(localStorage.getItem('picklepop.groups')||'[]');}catch(e){names=[];groups=[];}
+  input.value=names.join('\n');remaining=names.slice();count();renderGroups();
+  if('serviceWorker' in navigator && location.protocol!=='file:'){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+})();
+</script>
+</body>
+</html>
